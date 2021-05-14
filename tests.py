@@ -1,6 +1,7 @@
 import muffin
 import pytest
 from unittest import mock
+from apiclient.backends import BACKENDS
 
 
 @pytest.fixture
@@ -8,20 +9,23 @@ def app():
     return muffin.Application(DEBUG=True)
 
 
-def test_base(app):
+@pytest.mark.parametrize('backend', BACKENDS)
+def test_base(app, backend):
     from muffin_apiclient import Plugin
 
-    github = Plugin(app, name='github', root_url='https://api.github.com')
+    github = Plugin(app, name='github', root_url='https://api.github.com', backend=backend)
     assert github
     assert github.client
     assert github.api
+
+    assert isinstance(github.client.backend, BACKENDS[backend])
 
 
 @mock.patch('apiclient.backends._httpx.BackendHTTPX.request', new_callable=mock.AsyncMock)
 async def test_client(req, app):
     from muffin_apiclient import Plugin
 
-    github = Plugin(app, name='github', root_url='https://api.github.com')
+    github = Plugin(app, name='github', root_url='https://api.github.com', backend='httpx')
     req.return_value = True
 
     res = await github.api.repos.klen.muffin()

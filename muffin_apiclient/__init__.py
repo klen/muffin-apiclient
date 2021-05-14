@@ -28,6 +28,9 @@ class Plugin(BasePlugin):
         # Root URL (https://api.github.com)
         'root_url': None,
 
+        # APIClient Backend (httpx|aiohttp)
+        'backend': 'httpx',
+
         # Default client timeout
         'timeout': None,
 
@@ -45,7 +48,7 @@ class Plugin(BasePlugin):
         """Setup API Client."""
         super().setup(app, **options)
         self.client = APIClient(
-            self.cfg.root_url, timeout=self.cfg.timeout,
+            self.cfg.root_url, timeout=self.cfg.timeout, backend=self.cfg.backend,
             raise_for_status=self.cfg.raise_for_status,
             read_response_body=self.cfg.read_response_body,
             parse_response_body=self.cfg.parse_response_body,
