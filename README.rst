@@ -3,7 +3,7 @@ Muffin-APIClient
 
 .. _description:
 
-**Muffin-APIClient** -- Is a plugin for Muffin_ framework which provides support
+**Muffin-APIClient** -- Its a plugin for Muffin_ framework which provides support
 for external APIs
 
 .. _badges:
