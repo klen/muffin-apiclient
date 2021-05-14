@@ -61,6 +61,42 @@ Initialize and setup the plugin:
     apiclient = muffin_apiclient.Plugin()
     apiclient.setup(app, root_url='https://api.github.com')
 
+Github API (https://developer.github.com/v4/):
+
+.. code:: python
+
+    github = muffin_apiclient.Plugin(app, name='github', root_url='https://api.github.com', defaults={
+        'headers': {
+            'Authorization': 'token OAUTH-TOKEN'
+        }
+    })
+
+    # Read information about the current repository
+    repo = await github.api.repos.klen['muffin-apiclient'].get()
+    print(repo)  # dict parsed from Github Response JSON
+
+
+Slack API (https://api.slack.com/web):
+
+.. code:: python
+
+    slack = muffin_apiclient.Plugin(app, name='slack', root_url='https://slack.com/api', defaults={
+        'headers': {
+            'Authorization': 'token OAUTH-TOKEN'
+        }
+    })
+
+    # Update current user status (we don't care about this response)
+    await client.api['users.profile.set'].post(json={
+        'profile': {
+            'status_text': 'working',
+            'status_emoji': ':computer:'
+            'status_expiration': 30,
+        }
+    }, read_response_body=False)
+
+
+And etc
 
 Options
 -------
@@ -92,6 +128,9 @@ Or setup it inside ``Muffin.Application`` config using the ``APICLIENT_`` prefix
    APICLIENT_ROOT_URL = 'https://api.github.com'
 
 ``Muffin.Application`` configuration options are case insensitive
+
+
+
 
 
 .. _bugtracker:
