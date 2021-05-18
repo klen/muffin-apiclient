@@ -29,8 +29,18 @@ async def test_client(req, app):
     req.return_value = True
 
     res = await github.api.repos.klen.muffin()
+    assert res
     req.assert_awaited()
     req.assert_called_with(
         'GET', 'https://api.github.com/repos/klen/muffin',
         raise_for_status=True, read_response_body=True, parse_response_body=True)
+
+    req.reset_mock()
+    req.return_value = True
+
+    res = await github.request('GET', '/test')
     assert res
+    req.assert_awaited()
+    req.assert_called_with(
+        'GET', 'https://api.github.com/test',
+        raise_for_status=True, read_response_body=True, parse_response_body=True)

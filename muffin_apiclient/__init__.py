@@ -56,6 +56,9 @@ class Plugin(BasePlugin):
         )
         self.api = self.client.api
 
+    def __getattr__(self, name):
+        return getattr(self.client, name)
+
     async def startup(self):
         """Startup self client."""
         await self.client.startup()
