@@ -67,7 +67,7 @@ class Plugin(BasePlugin):
         """Shutdown self client."""
         await self.client.shutdown()
 
-    async def client_middleware(self, fn: T) -> T:
+    def client_middleware(self, fn: T) -> T:
         """Register a middleware."""
         client = t.cast(APIClient, self.client)
         return client.middleware(fn)
