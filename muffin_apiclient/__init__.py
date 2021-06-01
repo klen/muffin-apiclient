@@ -29,7 +29,8 @@ class Plugin(BasePlugin):
         'root_url': None,
 
         # APIClient Backend (httpx|aiohttp)
-        'backend': 'httpx',
+        'backend_type': 'httpx',
+        'backend_options': {},
 
         # Default client timeout
         'timeout': None,
@@ -48,7 +49,9 @@ class Plugin(BasePlugin):
         """Setup API Client."""
         super().setup(app, **options)
         self.client = APIClient(
-            self.cfg.root_url, timeout=self.cfg.timeout, backend=self.cfg.backend,
+            self.cfg.root_url, timeout=self.cfg.timeout,
+            backend_type=self.cfg.backend_type,
+            backend_options=self.cfg.backend_options,
             raise_for_status=self.cfg.raise_for_status,
             read_response_body=self.cfg.read_response_body,
             parse_response_body=self.cfg.parse_response_body,
@@ -57,6 +60,7 @@ class Plugin(BasePlugin):
         self.api = self.client.api
 
     def __getattr__(self, name):
+        """Proxy attributes to self client."""
         return getattr(self.client, name)
 
     async def startup(self):

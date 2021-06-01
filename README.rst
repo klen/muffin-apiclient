@@ -106,7 +106,8 @@ Name                        Default value               Desctiption
 --------------------------- --------------------------- ---------------------------
 **root_url**                ``None``                    Define general root URL for the client
 **timeout**                 ``None``                    Define client timeout
-**backend**                 ``httpx``                   APIClient backend (httpx|aiohttp)
+**backend_type**            ``httpx``                   APIClient backend (httpx|aiohttp)
+**backend_options**         ``{}``                      Backend options
 **raise_for_status**        ``True``                    Raise errors for HTTP statuses (300+)
 **read_response_body**      ``True``                    Read responses
 **parse_response_body**     ``True``                    Parse responses (load json, etc)

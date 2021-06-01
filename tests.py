@@ -14,17 +14,18 @@ def app():
     return muffin.Application(DEBUG=True)
 
 
-@pytest.mark.parametrize('backend', BACKENDS)
-def test_base(app, backend):
+@pytest.mark.parametrize('backend_type', BACKENDS)
+def test_base(app, backend_type):
     from muffin_apiclient import Plugin
 
-    github = Plugin(app, name='github', root_url='https://api.github.com', backend=backend)
+    github = Plugin(
+        app, name='github', root_url='https://api.github.com', backend_type=backend_type)
     assert github
     assert github.client
     assert github.api
     assert github.name == 'github'
 
-    assert isinstance(github.client.backend, BACKENDS[backend])
+    assert isinstance(github.client.backend, BACKENDS[backend_type])
 
 
 @mock.patch('apiclient.backends._httpx.BackendHTTPX.request', new_callable=mock.AsyncMock)
@@ -44,7 +45,7 @@ async def test_client(req, app):
                 options['headers']['x-token'] = 'TESTS'
                 return method, url, options
 
-    github = Github(app, root_url='https://api.github.com', backend='httpx')
+    github = Github(app, root_url='https://api.github.com', backend_type='httpx')
     assert github.client
     assert github.api
 
