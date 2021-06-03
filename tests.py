@@ -35,6 +35,8 @@ async def test_client(req, app):
     class Github(Plugin):
 
         name = 'github'
+        root_url = 'https://api.github.com'
+        timeout = 20
 
         def setup(self, app, **options):
             super().setup(app, **options)
@@ -45,9 +47,11 @@ async def test_client(req, app):
                 options['headers']['x-token'] = 'TESTS'
                 return method, url, options
 
-    github = Github(app, root_url='https://api.github.com', backend_type='httpx')
+    github = Github(app, backend_type='httpx')
     assert github.client
     assert github.api
+    assert github.cfg.root_url == 'https://api.github.com'
+    assert github.cfg.timeout == 20
 
     req.return_value = True
 
