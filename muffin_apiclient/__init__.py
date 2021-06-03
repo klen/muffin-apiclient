@@ -59,10 +59,6 @@ class Plugin(BasePlugin):
         )
         self.api = self.client.api
 
-    def __getattr__(self, name):
-        """Proxy attributes to self client."""
-        return getattr(self.client, name)
-
     async def startup(self):
         """Startup self client."""
         await self.client.startup()
@@ -75,3 +71,7 @@ class Plugin(BasePlugin):
         """Register a middleware."""
         client = t.cast(APIClient, self.client)
         return client.middleware(fn)
+
+    def request(self, *args, **kwargs) -> t.Awaitable:
+        """Make a request."""
+        return self.client.request(*args, **kwargs)
