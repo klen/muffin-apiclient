@@ -50,12 +50,11 @@ class Plugin(BasePlugin):
 
     def setup(self, app: Application, **options):
         """Setup API Client."""
-        self.cfg.update_from_dict({
-            'root_url': self.cfg.root_url or self.root_url,
-            'timeout': self.cfg.timeout or self.timeout,
-        })
-
         super().setup(app, **options)
+        self.cfg.update(
+            root_url=self.cfg.root_url or self.root_url,
+            timeout=self.cfg.timeout or self.timeout,
+        )
         self.client = APIClient(
             self.cfg.root_url, timeout=self.cfg.timeout,
             backend_type=self.cfg.backend_type,
