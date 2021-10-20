@@ -1,7 +1,12 @@
 import muffin
 import pytest
-from unittest import mock
 from apiclient.backends import BACKENDS
+
+# Support Python < 3.8
+try:
+    import mock  # type: ignore
+except ImportError:
+    import unittest.mock as mock  # type: ignore
 
 
 @pytest.fixture

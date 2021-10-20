@@ -81,4 +81,5 @@ class Plugin(BasePlugin):
 
     def request(self, *args, **kwargs) -> t.Awaitable:
         """Make a request."""
-        return self.client.request(*args, **kwargs)
+        client = t.cast(APIClient, self.client)
+        return client.request(*args, **kwargs)
