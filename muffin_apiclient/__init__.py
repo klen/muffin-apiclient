@@ -8,7 +8,7 @@ from muffin.plugins import BasePlugin
 from apiclient import APIClient
 
 
-__version__ = "3.5.0"
+__version__ = "3.5.1"
 __project__ = "muffin-apiclient"
 __author__ = "Kirill Klenov <horneds@gmail.com>"
 __license__ = "MIT"
