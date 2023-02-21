@@ -1,12 +1,12 @@
 """Support session with Muffin framework."""
 
-import typing as t
+from typing import Optional
 
 from muffin import Application
 from muffin.plugins import BasePlugin
 
-from apiclient import APIClient
-
+from apiclient import APIClient, TVMiddleware
+from apiclient.api import HTTPDescriptor
 
 __version__ = "3.5.1"
 __project__ = "muffin-apiclient"
@@ -14,39 +14,35 @@ __author__ = "Kirill Klenov <horneds@gmail.com>"
 __license__ = "MIT"
 
 
-T = t.TypeVar('T', bound=t.Callable)
-
-
 class Plugin(BasePlugin):
 
     """Make external API requests."""
 
     # Can be customized on setup
-    name = 'apiclient'
-    root_url: t.Optional[str] = None
-    timeout: t.Optional[int] = None
+    name = "apiclient"
+    root_url: Optional[str] = None
+    timeout: Optional[int] = None
 
-    defaults: t.Dict = {
-
+    defaults = {
         # Root URL (https://api.github.com)
-        'root_url': None,
-
+        "root_url": None,
         # APIClient Backend (httpx|aiohttp)
-        'backend_type': 'httpx',
-        'backend_options': {},
-
+        "backend_type": "httpx",
+        "backend_options": {},
         # Default client timeout
-        'timeout': None,
-
-        'raise_for_status': True,
-        'read_response_body': True,
-        'parse_response_body': True,
-
+        "timeout": None,
+        "raise_for_status": True,
+        "read_response_body": True,
+        "parse_response_body": True,
         # Client defaults (auth, headers)
-        'client_defaults': {},
+        "client_defaults": {},
     }
 
-    client = None
+    def __init__(self, app: Optional[Application] = None, **options):
+        """Initialize plugin."""
+        self.__api__ = None
+        self.__client__ = None
+        super().__init__(app, **options)
 
     def setup(self, app: Application, **options):
         """Setup API Client."""
@@ -55,8 +51,9 @@ class Plugin(BasePlugin):
             root_url=self.cfg.root_url or self.root_url,
             timeout=self.cfg.timeout or self.timeout,
         )
-        self.client = APIClient(
-            self.cfg.root_url, timeout=self.cfg.timeout,
+        self.__client__ = APIClient(
+            self.cfg.root_url,
+            timeout=self.cfg.timeout,
             backend_type=self.cfg.backend_type,
             backend_options=self.cfg.backend_options,
             raise_for_status=self.cfg.raise_for_status,
@@ -64,7 +61,21 @@ class Plugin(BasePlugin):
             parse_response_body=self.cfg.parse_response_body,
             **self.cfg.client_defaults
         )
-        self.api = self.client.api
+        self.__api__ = self.__client__.api
+
+    @property
+    def client(self) -> APIClient:
+        """Return client instance."""
+        if self.__client__ is None:
+            raise RuntimeError("Plugin is not initialized")
+        return self.__client__
+
+    @property
+    def api(self) -> HTTPDescriptor:
+        """Return client instance."""
+        if self.__api__ is None:
+            raise RuntimeError("Plugin is not initialized")
+        return self.__api__
 
     async def startup(self):
         """Startup self client."""
@@ -74,12 +85,10 @@ class Plugin(BasePlugin):
         """Shutdown self client."""
         await self.client.shutdown()
 
-    def client_middleware(self, fn: T) -> T:
+    def client_middleware(self, fn: TVMiddleware) -> TVMiddleware:
         """Register a middleware."""
-        client = t.cast(APIClient, self.client)
-        return client.middleware(fn)
+        return self.client.middleware(fn)
 
-    def request(self, *args, **kwargs) -> t.Awaitable:
+    def request(self, method: str, url: str, **options):
         """Make a request."""
-        client = t.cast(APIClient, self.client)
-        return client.request(*args, **kwargs)
+        return self.client.request(method, url, **options)
