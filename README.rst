@@ -101,7 +101,7 @@ And etc
 Options
 -------
 
-=========================== =========================== =========================== 
+=========================== =========================== ===========================
 Name                        Default value               Desctiption
 --------------------------- --------------------------- ---------------------------
 **root_url**                ``None``                    Define general root URL for the client
@@ -112,7 +112,7 @@ Name                        Default value               Desctiption
 **read_response_body**      ``True``                    Read responses
 **parse_response_body**     ``True``                    Parse responses (load json, etc)
 **client_defaults**         ``{}``                      Default client values (headers, auth, etc)
-=========================== =========================== =========================== 
+=========================== =========================== ===========================
 
 
 You are able to provide the options when you are initiliazing the plugin:
