@@ -1,2 +1,0 @@
-muffin          >= 0.86
-aio-apiclient   >= 1.6

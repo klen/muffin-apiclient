@@ -1,17 +1,15 @@
 """Support session with Muffin framework."""
 
-from typing import Optional
+from __future__ import annotations
 
-from muffin import Application
-from muffin.plugins import BasePlugin
+from typing import TYPE_CHECKING, Optional
 
 from apiclient import APIClient, TVMiddleware
-from apiclient.api import HTTPDescriptor
+from muffin.plugins import BasePlugin
 
-__version__ = "3.6.0"
-__project__ = "muffin-apiclient"
-__author__ = "Kirill Klenov <horneds@gmail.com>"
-__license__ = "MIT"
+if TYPE_CHECKING:
+    from apiclient.api import HTTPDescriptor
+    from muffin import Application
 
 
 class Plugin(BasePlugin):
@@ -40,8 +38,8 @@ class Plugin(BasePlugin):
 
     def __init__(self, app: Optional[Application] = None, **options):
         """Initialize plugin."""
-        self.__api__ = None
-        self.__client__ = None
+        self.__api__: Optional[HTTPDescriptor] = None
+        self.__client__: Optional[APIClient] = None
         super().__init__(app, **options)
 
     def setup(self, app: Application, **options):
@@ -59,7 +57,7 @@ class Plugin(BasePlugin):
             raise_for_status=self.cfg.raise_for_status,
             read_response_body=self.cfg.read_response_body,
             parse_response_body=self.cfg.parse_response_body,
-            **self.cfg.client_defaults
+            **self.cfg.client_defaults,
         )
         self.__api__ = self.__client__.api
 
