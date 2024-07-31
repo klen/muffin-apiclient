@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, ClassVar, Optional
 
 from apiclient import APIClient, TVMiddleware
 from muffin.plugins import BasePlugin
@@ -21,7 +21,7 @@ class Plugin(BasePlugin):
     root_url: Optional[str] = None
     timeout: Optional[int] = None
 
-    defaults = {
+    defaults: ClassVar = {
         # Root URL (https://api.github.com)
         "root_url": None,
         # APIClient Backend (httpx|aiohttp)
