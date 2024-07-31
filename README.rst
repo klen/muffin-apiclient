@@ -29,7 +29,7 @@ for external APIs
 Requirements
 =============
 
-- python >= 3.8
+- python >= 3.9
 
 .. _installation:
 
