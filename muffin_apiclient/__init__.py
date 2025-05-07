@@ -45,20 +45,22 @@ class Plugin(BasePlugin):
     def setup(self, app: Application, **options):
         """Setup API Client."""
         super().setup(app, **options)
-        self.cfg.update(
-            root_url=self.cfg.root_url or self.root_url,
-            timeout=self.cfg.timeout or self.timeout,
+        cfg = self.cfg
+        cfg.update(
+            root_url=cfg.root_url or self.root_url,
+            timeout=cfg.timeout or self.timeout,
         )
-        self.__client__ = APIClient(
-            self.cfg.root_url,
-            timeout=self.cfg.timeout,
-            backend_type=self.cfg.backend_type,
-            backend_options=self.cfg.backend_options,
-            raise_for_status=self.cfg.raise_for_status,
-            read_response_body=self.cfg.read_response_body,
-            parse_response_body=self.cfg.parse_response_body,
-            **self.cfg.client_defaults,
-        )
+        client_params = {
+            "timeout": cfg.timeout,
+            "backend_type": cfg.backend_type,
+            "backend_options": cfg.backend_options,
+            "raise_for_status": cfg.raise_for_status,
+            "read_response_body": cfg.read_response_body,
+            "parse_response_body": cfg.parse_response_body,
+        }
+        client_params.update(cfg.client_defaults)
+
+        self.__client__ = APIClient(cfg.root_url, **client_params)
         self.__api__ = self.__client__.api
 
     @property
