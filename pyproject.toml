@@ -5,7 +5,7 @@ description = "It's a plugin for Muffin framework which provides support for ext
 readme = "README.rst"
 license = "MIT"
 authors = [{ name = "Kirill Klenov", email = "horneds@gmail.com" }]
-keywords = ["apiclient", "muffin", "asyncio", "trio", "curio"]
+keywords = ["apiclient", "muffin", "asyncio"]
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Intended Audience :: Developers",
@@ -18,7 +18,6 @@ classifiers = [
   "Programming Language :: Python :: 3.15",
   "Topic :: Internet :: WWW/HTTP",
   "Framework :: AsyncIO",
-  "Framework :: Trio",
 ]
 requires-python = ">=3.11,<4"
 dependencies = ["muffin", "aio-apiclient"]
@@ -35,7 +34,7 @@ repository = "https://github.com/klen/muffin-apiclient"
 dev = [
   "ruff",
   "pytest",
-  "pytest-aio[curio,trio]",
+  "pytest-aio",
   "aiohttp",
   "httpx",
   "pre-commit",
