@@ -13,7 +13,6 @@ if TYPE_CHECKING:
 
 
 class Plugin(BasePlugin):
-
     """Make external API requests."""
 
     # Can be customized on setup
@@ -42,9 +41,11 @@ class Plugin(BasePlugin):
         self.__client__: Optional[APIClient] = None
         super().__init__(app, **options)
 
-    def setup(self, app: Application, **options):
+    def setup(self, app: Application, *, name: Optional[str] = None, **options) -> bool:
         """Setup API Client."""
-        super().setup(app, **options)
+        if not super().setup(app, name=name, **options):
+            return False
+
         cfg = self.cfg
         cfg.update(
             root_url=cfg.root_url or self.root_url,
@@ -62,6 +63,7 @@ class Plugin(BasePlugin):
 
         self.__client__ = APIClient(cfg.root_url, **client_params)
         self.__api__ = self.__client__.api
+        return True
 
     @property
     def client(self) -> APIClient:
