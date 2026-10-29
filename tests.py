@@ -1,20 +1,16 @@
+from unittest import mock
+
 import muffin
 import pytest
 from apiclient.backends import BACKENDS
 
-# Support Python < 3.8
-try:
-    import mock  # type: ignore
-except ImportError:
-    from unittest import mock  # type: ignore
 
-
-@pytest.fixture()
+@pytest.fixture
 def aiolib():
     return "asyncio"
 
 
-@pytest.fixture()
+@pytest.fixture
 def app():
     return muffin.Application(DEBUG=True)
 
@@ -108,3 +104,29 @@ async def test_client(req, app):
         read_response_body=True,
         parse_response_body=True,
     )
+
+
+def test_disabled(app):
+    from muffin_apiclient import Plugin
+
+    plugin = Plugin(app, root_url="https://api.github.com", disabled=True)
+    assert plugin.name not in app.plugins
+    with pytest.raises(RuntimeError, match="not initialized"):
+        _ = plugin.api
+
+
+def test_config(app):
+    from muffin_apiclient import Plugin
+
+    app.cfg.update(APICLIENT_ROOT_URL="https://api.github.com")
+    apiclient = Plugin(app)
+    assert apiclient.cfg.root_url == "https://api.github.com"
+
+
+def test_env_config(app, monkeypatch):
+    from muffin_apiclient import Plugin
+
+    monkeypatch.setenv("MUFFIN_GITHUB_ROOT_URL", "https://api.github.com")
+    github = Plugin(app, name="github")
+    assert github.cfg.root_url == "https://api.github.com"
+    assert app.plugins["github"] is github
