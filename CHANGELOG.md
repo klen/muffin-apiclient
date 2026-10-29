@@ -21,4 +21,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [Unreleased]: https://github.com/klen/aio-apiclient/compare/3.4.1...HEAD
 [3.4.1]: https://github.com/klen/aio-apiclient/compare/0.1.0...3.4.1
 [0.1.0]: https://github.com/klen/aio-apiclient/releases/tag/0.1.0
-
