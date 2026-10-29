@@ -56,21 +56,20 @@ def test_setup(app):
 async def test_client(req, app):
     from muffin_apiclient import Plugin
 
-    class Github(Plugin):
-        name = "github"
-        root_url = "https://api.github.com"
-        timeout = 20
+    github = Plugin(
+        app,
+        name="github",
+        root_url="https://api.github.com",
+        timeout=20,
+        backend_type="httpx",
+    )
 
-        def setup(self, app, **options):
-            super().setup(app, **options)
+    @github.client_middleware
+    async def md(method, url, options):
+        options.setdefault("headers", {})
+        options["headers"]["x-token"] = "TESTS"
+        return method, url, options
 
-            @self.client_middleware
-            async def md(method, url, options):
-                options.setdefault("headers", {})
-                options["headers"]["x-token"] = "TESTS"
-                return method, url, options
-
-    github = Github(app, backend_type="httpx")
     assert github.client
     assert github.api
     assert github.cfg.root_url == "https://api.github.com"
@@ -104,6 +103,23 @@ async def test_client(req, app):
         read_response_body=True,
         parse_response_body=True,
     )
+
+
+def test_required_root_url(app):
+    from muffin_apiclient import Plugin
+
+    with pytest.raises(ValueError, match="root_url is required"):
+        Plugin(app, name="github")
+
+
+def test_timeout(app):
+    from muffin_apiclient import Plugin
+
+    default = Plugin(app, name="default", root_url="https://api.github.com")
+    assert default.client.backend.client.timeout.read == 10
+
+    custom = Plugin(app, name="custom", root_url="https://api.github.com", timeout=7)
+    assert custom.client.backend.client.timeout.read == 7
 
 
 def test_disabled(app):

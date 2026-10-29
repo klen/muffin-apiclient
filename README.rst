@@ -148,7 +148,7 @@ Options
 Name                        Default value               Description
 --------------------------- --------------------------- ---------------------------
 **root_url**                ``None``                    Define general root URL for the client (required)
-**timeout**                 ``None``                    Request timeout in seconds, ``None`` keeps the backend default
+**timeout**                 ``10``                      Request timeout in seconds
 **backend_type**            ``httpx``                   APIClient backend (``httpx``|``aiohttp``)
 **backend_options**         ``{}``                      Options for the backend client
 **raise_for_status**        ``True``                    Raise errors for HTTP statuses (4xx/5xx)

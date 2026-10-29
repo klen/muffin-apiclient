@@ -17,8 +17,6 @@ class Plugin(BasePlugin):
 
     # Can be customized on setup
     name = "apiclient"
-    root_url: Optional[str] = None
-    timeout: Optional[int] = None
 
     defaults: ClassVar = {
         # Root URL (https://api.github.com)
@@ -27,7 +25,7 @@ class Plugin(BasePlugin):
         "backend_type": "httpx",
         "backend_options": {},
         # Default client timeout
-        "timeout": None,
+        "timeout": 10,
         "raise_for_status": True,
         "read_response_body": True,
         "parse_response_body": True,
@@ -47,10 +45,9 @@ class Plugin(BasePlugin):
             return False
 
         cfg = self.cfg
-        cfg.update(
-            root_url=cfg.root_url or self.root_url,
-            timeout=cfg.timeout or self.timeout,
-        )
+        if not cfg.root_url:
+            raise ValueError(f"{self.name}: root_url is required")
+
         client_params = {
             "timeout": cfg.timeout,
             "backend_type": cfg.backend_type,
