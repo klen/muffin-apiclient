@@ -11,7 +11,7 @@ except ImportError:
 
 @pytest.fixture()
 def aiolib():
-    return ("asyncio", {"use_uvloop": False})
+    return "asyncio"
 
 
 @pytest.fixture()
