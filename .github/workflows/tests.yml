@@ -16,7 +16,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13']
+        python-version: ["3.11", "3.12", "3.13", "3.14", "3.15"]
 
     steps:
     - uses: actions/checkout@main
@@ -27,11 +27,14 @@ jobs:
         python-version: ${{ matrix.python-version }}
         enable-cache: true
 
-    - name: Install requirements
-      run: uv sync
+    - name: Setup dependencies
+      run: uv sync --locked --all-extras --dev
+
+    - name: Check typing
+      run: uv run pyrefly check
 
     - name: Check code
-      run: uv run ruff check muffin_apiclient
+      run: uv run ruff check
 
     - name: Test with pytest
       run: uv run pytest
