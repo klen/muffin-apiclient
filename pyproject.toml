@@ -2,7 +2,7 @@
 name = "muffin-apiclient"
 version = "3.10.0"
 description = "It's a plugin for Muffin framework which provides support for external APIs"
-readme = "README.rst"
+readme = "README.md"
 license = "MIT"
 authors = [{ name = "Kirill Klenov", email = "horneds@gmail.com" }]
 keywords = ["apiclient", "muffin", "asyncio"]
@@ -58,7 +58,7 @@ addopts = "-xsv tests.py"
 log_cli = true
 
 [tool.pyrefly]
-project-includes = ["muffin_apiclient"]
+project-includes = ["muffin_apiclient", "tests.py"]
 
 [tool.tox]
 legacy_tox_ini = """

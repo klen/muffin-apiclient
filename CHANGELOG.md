@@ -5,6 +5,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- `PluginOptions` TypedDict: plugin options and config values are type checked
+  (`Plugin(app, root_urll=...)` and `timeout="10"` are reported by type checkers)
+
+### Changed
+- `Plugin` is generic over the response type (`Plugin[httpx.Response]`), so `plugin.api` paths
+  and `plugin.request()` return typed responses instead of `Any`
+- Annotated `Plugin.startup`/`shutdown`, so calls to them no longer need type ignores
+- `client_middleware` is generic, so a decorated middleware keeps its type
+- README rewritten in Markdown: more request, typing and middleware examples, options reference
 
 ## [3.9.0] - 2025-05-07
 ### Added

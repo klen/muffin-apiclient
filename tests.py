@@ -1,8 +1,20 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Protocol, cast
 from unittest import mock
 
 import muffin
 import pytest
 from apiclient.backends import BACKENDS
+
+if TYPE_CHECKING:
+    import httpx
+
+
+class HTTPXBackend(Protocol):
+    """ABCBackend does not declare the backend client attribute."""
+
+    client: httpx.AsyncClient
 
 
 @pytest.fixture
@@ -116,10 +128,10 @@ def test_timeout(app):
     from muffin_apiclient import Plugin
 
     default = Plugin(app, name="default", root_url="https://api.github.com")
-    assert default.client.backend.client.timeout.read == 10
+    assert cast("HTTPXBackend", default.client.backend).client.timeout.read == 10
 
     custom = Plugin(app, name="custom", root_url="https://api.github.com", timeout=7)
-    assert custom.client.backend.client.timeout.read == 7
+    assert cast("HTTPXBackend", custom.client.backend).client.timeout.read == 7
 
 
 def test_disabled(app):
